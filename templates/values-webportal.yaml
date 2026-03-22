@@ -1,0 +1,74 @@
+# Default values for techdemand web portal (frontend).
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+fullnameOverride: webportal
+namespace: prod
+image: 594474085976.dkr.ecr.us-east-2.amazonaws.com/prod/techdemand:techdemand-web-1ae3141
+replicaCount: 2
+pdb:
+  enabled: true
+minAvailable: 1
+targetPort: 80
+containerPort: 80
+container:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+  ports:
+    - containerPort: 80
+      name: tcp
+readinessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 120
+  failureThreshold: 3
+livenessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 120
+  failureThreshold: 3
+imagePullSecrets: aws-image-pull-secret
+hpa:
+  maxReplicas: 10
+  minReplicas: 2
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 70
+enVaribles:
+  configMapRef:
+    - name: techdemand-env-config
+# nodeSelector:
+#   topology.hostpath.csi/node: <node-id>
+env:
+  TZ: "Africa/Lagos"
+
+serviceAccount:
+  create: false
+  automount: false
+  name: ""
+
+autoscaling:
+  enabled: false
+
+service:
+  type: ClusterIP
