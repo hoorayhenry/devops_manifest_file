@@ -37,7 +37,7 @@ spec:
               service:
                 name: {{ include "techdemand.fullname" $ }}
                 port:
-                  number: {{ $.Values.service.port }}
+                  number: {{ $.Values.containerPort }}
           {{- end }}
     {{- end }}
 {{- end }}
