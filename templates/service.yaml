@@ -2,13 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "techdemand.fullname" . }}
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
   labels:
     {{- include "techdemand.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - port: {{ .Values.containerPort }}
+      targetPort: {{ .Values.targetPort | default .Values.containerPort }}
       protocol: TCP
       name: http
   selector:
