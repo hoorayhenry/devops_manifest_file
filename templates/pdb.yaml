@@ -1,0 +1,14 @@
+{{- if and .Values.pdb .Values.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "techdemand.fullname" . }}
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+  labels:
+    {{- include "techdemand.labels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.minAvailable | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "techdemand.selectorLabels" . | nindent 6 }}
+{{- end }}

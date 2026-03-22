@@ -1,8 +1,9 @@
-{{- if .Values.autoscaling.enabled }}
+{{- if and .Values.autoscaling .Values.autoscaling.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "techdemand.fullname" . }}
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
   labels:
     {{- include "techdemand.labels" . | nindent 4 }}
 spec:
